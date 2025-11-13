@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  username    String
+  email       String   @unique
+  password    String
+  createdTime DateTime @default(now())
+
+  moods         Mood[]
+  posts         Post[]
+  comments      Comment[]
+  likes         Like[]
+  notifications Notification[]
+}
+
+model Mood {
+  id          String   @id @default(uuid())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  moodType    String
+  note        String?
+  createdTime DateTime @default(now())
+}
+
+model Motivation {
+  id          String   @id @default(uuid())
+  title       String
+  category    String
+  content     String
+  createdTime DateTime @default(now())
+}
+
+model Post {
+  id          String   @id @default(uuid())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  content     String
+  createdTime DateTime @default(now())
+
+  comments Comment[]
+  likes    Like[]
+}
+
+model Comment {
+  id          String   @id @default(uuid())
+  post        Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  content     String
+  createdTime DateTime @default(now())
+}
+
+model Like {
+  id     String @id @default(uuid())
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@unique([postId, userId])
+}
+
+model Notification {
+  id      String   @id @default(uuid())
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  message String
+  sentAt  DateTime @default(now())
+}

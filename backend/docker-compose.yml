@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: mood-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: buse1235
+      POSTGRES_DB: moodapp
+    ports:
+      - "5433:5432"   # <-- burayı port değiştirme için böyle bıraktık
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - project-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: mood-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@moodapp.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - project-network
+
+networks:
+  project-network:
+    driver: bridge
+
+volumes:
+  pgdata:
