@@ -14,11 +14,12 @@ model User {
   password    String
   createdTime DateTime @default(now())
 
-  moods         Mood[]
-  posts         Post[]
-  comments      Comment[]
-  likes         Like[]
-  notifications Notification[]
+  moods              Mood[]
+  posts              Post[]
+  comments           Comment[]
+  likes              Like[]
+  notifications      Notification[]
+  notificationTokens NotificationToken[]
 }
 
 model Mood {
@@ -70,9 +71,24 @@ model Like {
 }
 
 model Notification {
-  id      String   @id @default(uuid())
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  String
+  id     String @id @default(uuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  title   String
   message String
-  sentAt  DateTime @default(now())
+  type    String
+  isRead  Boolean @default(false)
+
+  sentAt DateTime @default(now())
+}
+
+model NotificationToken {
+  id     String @id @default(uuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  token     String   @unique
+  platform  String
+  createdAt DateTime @default(now())
 }
