@@ -1,13 +1,12 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { PrismaClient } from '@prisma/client';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import notificationRoutes from "./modules/notification/notification.route";
-import auth from "../src/routes/authRoutes";
+import apiGateway from "./routes/index";
+
 dotenv.config();
 const PORT = process.env.PORT || 5004;
-const app = express();
+export const app = express();
 app.use(cors({
   origin: "http://localhost:5173", 
   credentials: true
@@ -15,14 +14,9 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
-app.use("/notification", notificationRoutes);
-app.use("/auth",authRoutes);
+app.use("/api", apiGateway);
 
-const prisma = new PrismaClient();
 
 app.get('/', (req, res) => {
     res.json({ message: 'api çalışıyor!' });
-});
-app.listen(PORT, () => {
-    console.log(`Sunucu ${PORT} portunda çalışıyor`);
 });

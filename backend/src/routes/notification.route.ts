@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { sendReminder } from "../../modules/notification/notificationService";
+import { sendReminder } from "../modules/notification/notificationService";
 
 const router = Router();
 
